@@ -27,7 +27,8 @@ ExternalProject_Add(gmock_external
   LOG_BUILD TRUE
 )
 
-set(GTEST_INCLUDE_DIR "${GMOCK_SRC}/googletest/include")
-set(GMOCK_INCLUDE_DIR "${GMOCK_SRC}/googlemock/include")
-
-link_directories(${GMOCK_BIN}/lib)
+set_target_properties(gmock_external
+    PROPERTIES
+    GTEST_INCLUDE_DIR "${GMOCK_SRC}/googletest/include"
+    GMOCK_INCLUDE_DIR "${GMOCK_SRC}/googlemock/include"
+    GMOCK_LIBS_DIR "${GMOCK_BIN}/lib")
