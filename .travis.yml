@@ -1,16 +1,25 @@
 language: cpp
 
-
 compiler:
   - clang
   - gcc
   
 os: linux
 
+dist: xenial
+
 # Handle git submodules yourself
 git:
     submodules: false
+
 # Use sed to replace the SSH URL with the public URL, then initialize submodules
 before_install:
+    - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+    - sudo apt-get update -qq
+    - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
+    - sudo apt-get install qt5-default qttools5-dev-tools
+
     - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
     - git submodule update --init
+
+script: ./ci/travis.sh
