@@ -11,6 +11,11 @@ cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/deps
 
+# Boost
+addons: 
+  apt: 
+    packages: libboost-all-dev
+    
 matrix:
   include:
     ##########################################################################
