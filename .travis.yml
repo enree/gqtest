@@ -11,11 +11,6 @@ cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/deps
 
-# Boost
-addons: 
-  apt: 
-    packages: libboost-all-dev
-    
 matrix:
   include:
     ##########################################################################
@@ -26,6 +21,7 @@ matrix:
       addons: &clang70
         apt:
           packages:
+            - libboost-all-dev
             - clang-7
             - g++-7
           sources:
@@ -43,7 +39,9 @@ matrix:
     - env: COMPILER=g++-7 BUILD_TYPE=Debug USE_CXX_STANDARD=17
       addons: &gcc7
         apt:
-          packages: g++-7
+          packages: 
+            - g++-7
+            - libboost-all-dev
           sources:
             - ubuntu-toolchain-r-test
 
