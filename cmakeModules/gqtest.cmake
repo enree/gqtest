@@ -1,5 +1,9 @@
 option(NO_GQTESTS "Do not build tests" OFF)
 
+if (NOT DEFINED GQTEST_INCLUDES)
+    set(GQTEST_INCLUDES ${GQTEST_ROOT}/src)
+endif()
+
 # Add test component
 macro(tests target)
     if (NOT NO_GQTESTS)

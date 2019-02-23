@@ -1,25 +1,126 @@
 language: cpp
+sudo: false
+notifications:
+  email: false
 
-compiler:
-  - clang
-  - gcc
-  
+# Use Linux unless specified otherwise
 os: linux
-
 dist: xenial
 
-# Handle git submodules yourself
-git:
-    submodules: false
+cache:
+  directories:
+    - ${TRAVIS_BUILD_DIR}/deps
 
-# Use sed to replace the SSH URL with the public URL, then initialize submodules
-before_install:
-    - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-    - sudo apt-get update -qq
-    - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
-    - sudo apt-get install qt5-default qttools5-dev-tools
+matrix:
+  include:
+    ##########################################################################
+    # Clang on Linux
+    ##########################################################################
+    # Clang 6.0
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug USE_CXX_STANDARD=14
+      addons: &clang60
+        apt:
+          packages:
+            - clang-6.0
+            - g++-7
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-6.0
+            - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-6.0 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
 
-    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-    - git submodule update --init
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Release USE_CXX_STANDARD=14
+      addons: *clang60
 
-script: ./ci/travis.sh
+    # Clang 6.0 c++17
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug USE_CXX_STANDARD=17
+      addons: *clang60
+
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Release USE_CXX_STANDARD=17
+      addons: *clang60
+
+    # Clang 7.0
+    - env: COMPILER=clang++-7 BUILD_TYPE=Debug USE_CXX_STANDARD=14
+      addons: &clang70
+        apt:
+          packages:
+            - clang-7
+            - g++-7
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-7
+
+
+    - env: COMPILER=clang++-7 BUILD_TYPE=Release USE_CXX_STANDARD=14
+      addons: *clang70
+
+    # Clang 7.0 c++17
+    - env: COMPILER=clang++-7 BUILD_TYPE=Debug USE_CXX_STANDARD=17
+      addons: *clang70
+
+    - env: COMPILER=clang++-7 BUILD_TYPE=Release USE_CXX_STANDARD=17
+      addons: *clang70
+
+    ##########################################################################
+    # GCC on Linux
+    ##########################################################################
+    # GCC 7
+    - env: COMPILER=g++-7 BUILD_TYPE=Debug USE_CXX_STANDARD=14
+      addons: &gcc7
+        apt:
+          packages: g++-7
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - env: COMPILER=g++-7 BUILD_TYPE=Release USE_CXX_STANDARD=14
+      addons: *gcc7
+
+    # GCC 7 c++17 
+    - env: COMPILER=g++-7 BUILD_TYPE=Debug USE_CXX_STANDARD=17
+      addons: *gcc7
+
+    - env: COMPILER=g++-7 BUILD_TYPE=Release USE_CXX_STANDARD=17
+      addons: *gcc7
+
+install:
+  # Set the ${CXX} variable properly
+  - export CXX=${COMPILER}
+  - ${CXX} --version
+
+  # Dependencies required by the CI are installed in ${TRAVIS_BUILD_DIR}/deps/
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - mkdir -p "${DEPS_DIR}"
+  - cd "${DEPS_DIR}"
+
+  # Travis machines have 2 cores
+  - JOBS=2
+
+  ############################################################################
+  # Install a recent CMake 
+  ############################################################################
+  - CMAKE_VERSION=3.9.6
+  - |
+      CMAKE_URL="https://cmake.org/files/v${CMAKE_VERSION%.[0-9]}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz"
+      mkdir cmake && travis_retry wget --no-check-certificate -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+  - cmake --version
+
+before_script:
+  ############################################################################
+  # Install qt
+  ############################################################################
+  - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+  - sudo apt-get update -qq
+  - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
+  - sudo apt-get install qt5-default qttools5-dev-tools
+    
+  # have CMake to generate build files
+  - cd "${TRAVIS_BUILD_DIR}"
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_STANDARD=$USE_CXX_STANDARD
+  
+script:
+  # build and run tests
+  - cmake --build . -- -j${JOBS}
+  - ctest --output-on-failure -j${JOBS}
+    
