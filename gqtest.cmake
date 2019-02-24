@@ -6,6 +6,8 @@ if (DEFINED GQTEST_ROOT)
 endif()
 set(GQTEST_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
+include(${GQTEST_ROOT}/cmakeModules/external_gtest.cmake)
+include(${GQTEST_ROOT}/cmakeModules/gqtest.cmake)
+
 add_subdirectory(${GQTEST_ROOT})
 
-include(${GQTEST_ROOT}/cmakeModules/gqtest.cmake)

@@ -1,3 +1,9 @@
+if (DEFINED EXTERNAL_GTEST)
+    return()
+endif()
+
+set(EXTERNAL_GTEST "1")
+
 find_package(Threads REQUIRED)
 
 include(ExternalProject)
