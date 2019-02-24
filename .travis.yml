@@ -11,6 +11,14 @@ cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/deps
 
+before_install:
+  ############################################################################
+  # Install qt and boost
+  ############################################################################
+  - sudo add-apt-repository ppa:beineri/opt-qt-5.12.0-xenial -y
+  - sudo apt-get update  
+  - sudo apt-get install qt512base
+
 matrix:
   include:
     ##########################################################################
@@ -21,7 +29,6 @@ matrix:
       addons: &clang70
         apt:
           packages:
-            - libboost-all-dev
             - clang-7
             - g++-7
           sources:
@@ -41,7 +48,6 @@ matrix:
         apt:
           packages: 
             - g++-7
-            - libboost-all-dev
           sources:
             - ubuntu-toolchain-r-test
 
@@ -72,14 +78,8 @@ install:
   - cmake --version
 
 before_script:
-  ############################################################################
-  # Install qt
-  ############################################################################
-  - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-  - sudo apt-get update -qq
-  - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
-  - sudo apt-get install qt5-default qttools5-dev-tools
-    
+  # Set correct qt env vars
+  - source /opt/qt512/bin/qt512-env.sh
   # have CMake to generate build files
   - cd "${TRAVIS_BUILD_DIR}"
   - mkdir build && cd build
