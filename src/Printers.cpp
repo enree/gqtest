@@ -1,5 +1,5 @@
 /** @file
- * @brief Usefull generic functions for testing (implementation)
+ * @brief Qt types printers
  *
  * $Id: $
  */
@@ -11,9 +11,26 @@
 #include <QRegExp>
 #include <QUuid>
 
-#include <boost/algorithm/hex.hpp>
-
 QT_BEGIN_NAMESPACE
+
+namespace
+{
+
+constexpr auto hexmap = "0123456789ABCDEF";
+
+std::string hexString(const QByteArray& array)
+{
+    std::string s(array.size() * 2, ' ');
+    for (int i = 0; i < array.size(); ++i)
+    {
+        const unsigned char c = array.at(i);
+        s[2 * i] = hexmap[(c & 0xF0u) >> 4u];
+        s[2 * i + 1] = hexmap[c & 0x0Fu];
+    }
+    return s;
+}
+
+} // namespace
 
 void PrintTo(const QString& string, ::std::ostream* stream)
 {
@@ -22,7 +39,7 @@ void PrintTo(const QString& string, ::std::ostream* stream)
 
 void PrintTo(const QByteArray& array, ::std::ostream* stream)
 {
-    *stream << "[" << boost::algorithm::hex(array).constData() << "]";
+    *stream << "[" << hexString(array) << "]";
 }
 
 void PrintTo(const QRegExp& regexp, std::ostream* stream)

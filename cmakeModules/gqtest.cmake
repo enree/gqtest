@@ -15,7 +15,7 @@ endmacro()
 # LIBS - list of libraries to link to target
 # QT - list of Qt modules to add to target
 # BOOST - list of boost modules to add to target
-macro(gqtest TARGET)
+macro(gtest TARGET)
     set(oneValueArgs RECURSIVE)
     set(multiValueArgs SOURCES LIBS QT BOOST GLOBBING)
     cmake_parse_arguments(OPTIONS "" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})

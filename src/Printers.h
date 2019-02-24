@@ -1,5 +1,5 @@
 /** @file
- * @brief Usefull generic functions for testing (specifications)
+ * @brief Qt types printers
  *
  * $Id: $
  */

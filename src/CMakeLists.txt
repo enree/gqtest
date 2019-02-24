@@ -16,4 +16,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 add_dependencies(${PROJECT_NAME} ${GTEST_LIBRARY})
 
+
+lint(${PROJECT_NAME})
 tests("")

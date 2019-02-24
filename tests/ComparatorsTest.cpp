@@ -1,7 +1,6 @@
 /** @file
  * @brief     Comparators test suite
  *
- * @copyright (C) 2014 PKB RIO Design Department
  *
  * $Id: $
  */
