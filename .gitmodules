@@ -1,3 +1,3 @@
 [submodule "cmake"]
 	path = cmake
-	url = git@github.com:enree/cmake.git
+	url = https://github.com/enree/cmake.git
