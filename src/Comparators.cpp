@@ -29,12 +29,14 @@ testing::AssertionResult fuzzyStringCompare(
     QSet<QString> expectedSet;
     QSet<QString> actualSet;
 
-    for (const auto& value: expected.split(separator))
+    const auto& expectedValues = expected.split(separator);
+    for (const auto& value: expectedValues)
     {
         expectedSet.insert(ignoreWhitespace ? value.trimmed() : value);
     }
 
-    for (const auto& value: actual.split(separator))
+    const auto& actualValues = actual.split(separator);
+    for (const auto& value: actualValues)
     {
         actualSet.insert(ignoreWhitespace ? value.trimmed() : value);
     }
@@ -174,7 +176,8 @@ compareOwnProperties(const QObject& expected, const QObject& actual)
 testing::AssertionResult
 compareDynamicProperties(const QObject& expected, const QObject& actual)
 {
-    for (const auto& name: expected.dynamicPropertyNames())
+    const auto& names = expected.dynamicPropertyNames();
+    for (const auto& name: names)
     {
         testing::AssertionResult result
             = compareProperties(expected, actual, name);
