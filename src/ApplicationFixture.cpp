@@ -15,8 +15,8 @@ namespace gqtest
 namespace
 {
 
-char arg1[] = "gtests";
-char* argv[] = { arg1, nullptr };
+char arg1[] = "gtests"; // NOLINT
+char* argv[] = { arg1, nullptr }; // NOLINT
 
 } // namespace
 
