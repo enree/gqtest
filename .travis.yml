@@ -36,9 +36,6 @@ matrix:
             - llvm-toolchain-trusty-7
 
 
-    - env: COMPILER=clang++-7 BUILD_TYPE=Release USE_CXX_STANDARD=17
-      addons: *clang70
-
     ##########################################################################
     # GCC on Linux
     ##########################################################################
@@ -50,9 +47,6 @@ matrix:
             - g++-7
           sources:
             - ubuntu-toolchain-r-test
-
-    - env: COMPILER=g++-7 BUILD_TYPE=Release USE_CXX_STANDARD=17
-      addons: *gcc7
 
 install:
   # Set the ${CXX} variable properly
@@ -83,7 +77,7 @@ before_script:
   # have CMake to generate build files
   - cd "${TRAVIS_BUILD_DIR}"
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_STANDARD=$USE_CXX_STANDARD
+  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_STANDARD=$USE_CXX_STANDARD -DSANITIZE=ON
   
 script:
   # build and run tests

@@ -24,8 +24,10 @@ std::string hexString(const QByteArray& array)
     for (int i = 0; i < array.size(); ++i)
     {
         const unsigned char c = array.at(i);
-        s[2 * i] = hexmap[(c & 0xF0u) >> 4u];
-        s[2 * i + 1] = hexmap[c & 0x0Fu];
+        constexpr auto hiByte = 0xF0U;
+        s[2 * i] = hexmap[(c & hiByte) >> 4U];
+        constexpr auto lowByte = 0x0FU;
+        s[2 * i + 1] = hexmap[c & lowByte];
     }
     return s;
 }
