@@ -21,7 +21,7 @@ DelayedExecution::DelayedExecution()
 
 void DelayedExecution::addAction(DelayedExecution::Function action)
 {
-    m_actions.emplace_back(action);
+    m_actions.emplace_back(std::move(action));
 }
 
 void DelayedExecution::sendComplete()
